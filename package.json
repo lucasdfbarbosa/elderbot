@@ -1,0 +1,22 @@
+{
+  "name": "elder-dice",
+  "version": "1.0.0",
+  "description": "manage the game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dice",
+    "roll",
+    "elder",
+    "sign"
+  ],
+  "author": "\"Lucas Barbosa\"",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "discord.js-collector": "^1.8.1",
+    "lodash": "^4.17.20"
+  }
+}
