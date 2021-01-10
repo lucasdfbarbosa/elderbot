@@ -1614,6 +1614,7 @@ client.on('message', function (message: any) {
   // ######## ########  !modo modo     - 	  comando para SELECIONAR MODO DE JOGO  ######## ########
   if (command == 'modo') {
     let mesaA = achaMesa(message.channel.parentID, mesa)
+    console.debug('Inicio comando modo, mesaA = ', mesaA)
 
     if (
       !mesaA &&
@@ -1632,10 +1633,12 @@ client.on('message', function (message: any) {
       matv.modo = args[0]
       //message.channel.send("\|\|<@392823505869340682>, quantidade de mesas antes de verificar se tem mesa e adicionar caso não tenha: "+mesa.length+"\|\|");
       if (!mesaA) {
-        mesa[mesa.length] = matv
-        mesaA = mesa[mesa.length]
+        console.debug('Mesa não existe, criando mesa')
+        mesa.push(matv)
+        mesaA = mesa[mesa.length - 1]
       } else {
         mesaA.modo = args[0]
+        console.debug('Mesa já existe, atualizando modo', mesaA)
       }
 
       //message.channel.send("\|\|<@392823505869340682>, quantidade de mesas após verificações : "+mesa.length+"\|\|");
