@@ -6,3 +6,15 @@
 export function negrito(texto: string): string {
   return `**${texto}**`
 }
+
+export function italico(texto: string): string {
+  return `*${texto}*`
+}
+
+export function sublin(texto: string): string {
+  return `__${texto}__`
+}
+
+export function trafado(texto: string): string {
+  return `~~${texto}~~`
+}
