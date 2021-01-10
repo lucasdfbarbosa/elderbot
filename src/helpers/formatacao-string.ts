@@ -18,3 +18,7 @@ export function sublin(texto: string): string {
 export function trafado(texto: string): string {
   return `~~${texto}~~`
 }
+
+export function hiddenText(texto: string): string {
+  return `||${texto}||`
+}

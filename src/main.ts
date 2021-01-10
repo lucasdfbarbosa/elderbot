@@ -3,9 +3,13 @@ import * as Discord from 'discord.js'
 import * as config from '../config.json'
 import { idInvestigadores, INVESTIGADORES } from './baralhos/investigadores'
 import { Emojis } from './enum/emojis'
+import { Images } from './enum/images'
 import { negrito } from './helpers/formatacao-string'
+import { achaMesa } from './helpers/verificacao'
 
 const client = new Discord.Client()
+
+let imatv
 
 // ######## ######## ######## ######## ######## ######## ########
 // ######## ########       BANCOS DE DADOS      ######## ########
@@ -51,8 +55,7 @@ var jogo = {
       nobar: true, // está no baralho?
       ativo: false, // é o ancião em desafio?
       destr: false, // foi destruído?
-      imag:
-        'https://media.discordapp.net/attachments/785724975520415787/785725195835015188/Azathoth.jpeg',
+      imag: Images.AZATHOTH,
     }, // link da imagem
 
     {
@@ -1544,7 +1547,7 @@ client.on('message', function (message: any) {
   }
 
   // ######## ########  !mesa nome da mesa    - 	  comando para SOLICITAR MESA / cria categoria com o nome da mesa  ######## ########
-  const topSecretMesa = '790943019758649374' 
+  const topSecretMesa = '790943019758649374'
   const solicitacaoMesa = '785827646344265779'
   if (command === 'mesa') {
     if (
@@ -1586,16 +1589,16 @@ client.on('message', function (message: any) {
               )
               channel.send(
                 '```  PREPARAÇÃO DO JOGO   ```\n**Convide** os outros jogadores e siga com as mensagens abaixo\n\n' + // send message to new channel
-                  //"\|\|*convidar* ainda não está automatizado, **mencione <@392823505869340682> e os jogadores na mesma mensagem** para que eles sejam \"adicionados\" na mesa\|\|\n\n"+
-                  'Você pode escolher os <#785724975520415787> e <#785721643393351700> para a partida, ou gerar aleatório\n' +
-                  'As regras oficiais dizem *para 1-8 jogadores* ~~mas isso pode ser alterado~~\n' +
-                  'O número de <#785721643393351700> não precisa ser o mesmo de jogadores da mesa, não há limite de jogadores\n\n' +
-                  '**MODO DE JOGO**\n' +
-                  '``` • partida [simples] - selecione até 8 Investigadores ativos para jogar contra um Ancião\n' +
-                  ' • [sobr]evivência - destrua TODOS os Anciões antes que TODOS os Investigadores sejam devorados (até 8 Investigadores ativos)\n' +
-                  ' • [solo] - boa sorte\n' +
-                  ' • [custom]izado - selecione a quantidade de Anciões a serem destruídos e a quantidade de Investigadores ativos ```\n**SELECIONE MODO DE JOGO**\n\n' +
-                  '> Digite o comando `!modo -op`\n> onde `-op` é o [texto entre parênteses] *(ex: `!modo solo`)*',
+                //"\|\|*convidar* ainda não está automatizado, **mencione <@392823505869340682> e os jogadores na mesma mensagem** para que eles sejam \"adicionados\" na mesa\|\|\n\n"+
+                'Você pode escolher os <#785724975520415787> e <#785721643393351700> para a partida, ou gerar aleatório\n' +
+                'As regras oficiais dizem *para 1-8 jogadores* ~~mas isso pode ser alterado~~\n' +
+                'O número de <#785721643393351700> não precisa ser o mesmo de jogadores da mesa, não há limite de jogadores\n\n' +
+                '**MODO DE JOGO**\n' +
+                '``` • partida [simples] - selecione até 8 Investigadores ativos para jogar contra um Ancião\n' +
+                ' • [sobr]evivência - destrua TODOS os Anciões antes que TODOS os Investigadores sejam devorados (até 8 Investigadores ativos)\n' +
+                ' • [solo] - boa sorte\n' +
+                ' • [custom]izado - selecione a quantidade de Anciões a serem destruídos e a quantidade de Investigadores ativos ```\n**SELECIONE MODO DE JOGO**\n\n' +
+                '> Digite o comando `!modo -op`\n> onde `-op` é o [texto entre parênteses] *(ex: `!modo solo`)*',
                 {
                   files: [
                     'https://cdn.discordapp.com/attachments/727097227759058994/727436900876681236/line.png',
@@ -1610,15 +1613,14 @@ client.on('message', function (message: any) {
 
   // ######## ########  !modo modo     - 	  comando para SELECIONAR MODO DE JOGO  ######## ########
   if (command == 'modo') {
+    let mesaA = achaMesa(message.channel.parentID, mesa)
+
     if (
-      (imatv = mesa.findIndex(
-        (element) => element.id == message.channel.parentID,
-      )) < 0 &&
+      !mesaA &&
       message.channel.name != 'preparação'
     ) {
-      // seleciona ÍNDICE da mesa ativa
       message.reply(
-        'não há MESA para este canal\nCrie uma MESA em <#785827646344265779>',
+        `não há MESA para este canal\nCrie uma MESA em <#785827646344265779>`,
       )
     } else if (!['simples', 'sobr', 'solo', 'custom'].includes(args[0])) {
       message.reply(
@@ -1629,51 +1631,33 @@ client.on('message', function (message: any) {
       matv.id = message.channel.parentID
       matv.modo = args[0]
       //message.channel.send("\|\|<@392823505869340682>, quantidade de mesas antes de verificar se tem mesa e adicionar caso não tenha: "+mesa.length+"\|\|");
-      if (
-        (imatv = mesa.findIndex(
-          (element) => element.id == message.channel.parentID,
-        )) < 0
-      ) {
-        // retorna ÍNDICE da mesa ativa
+      if (!mesaA) {
         mesa[mesa.length] = matv
-        var imatv = mesa.findIndex(
-          (element) => element.id == message.channel.parentID,
-        )
+        mesaA = mesa[mesa.length]
       } else {
-        for (i = 0; i < mesa.length; i++) {
-          if (mesa[i].id == message.channel.parentID) {
-            if (mesa[i].modo != '-') {
-              mesa[i] = matv
-            } else {
-              mesa[i].modo = args[0]
-              break
-            }
-          } else if (i == mesa.length - 1) {
-            mesa[mesa.length] = matv
-          }
-        }
+        mesaA.modo = args[0]
       }
 
       //message.channel.send("\|\|<@392823505869340682>, quantidade de mesas após verificações : "+mesa.length+"\|\|");
       for (i = 0; i < 16; i++) {
         // reseta baralho de anciões e investigadores qndo modo é selecionado
         if (i < 8) {
-          mesa[imatv].canc[i].nobar = true
+          mesaA.canc[i].nobar = true
         }
-        mesa[imatv].cinvs[i].nobar = true
+        mesaA.cinvs[i].nobar = true
       }
       var gtxt =
         '**SELECIONE ANCIÕES**' +
         '``` • aleató[r]io\n • [aza]thoth, Destruição Total\n • [cth]ulhu, Sonhos de Loucura\n • [has]tur, O Rei de Amarelo\n • [ith]aqua, Ventos Congelantes\n • [nya]rlathotep, As Mil Máscaras\n • [shu]b-Niggurath, A Cabra Negra do Bosque\n • [yig], A Fúria de Yig\n • [yog]-Sothoth, A Chave e o Portal  ```'
-      switch (mesa[imatv].modo) {
+      switch (mesaA.modo) {
         case 'simples': // modo SIMPLES
           message.channel.send('``` PARTIDA SIMPLES ```\n')
           message.channel.send(gtxt)
           message.channel.send(
             '> - Digite o comando `!an -op`\n' +
-              '> onde `-op` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido *(ex: `!an cth`)*\n' +
-              '> - Se `-op` for `r`, então será aleatorizado um ancião\n' +
-              '> - Digite o comando `!id_anciao` para ver a carta do ancião',
+            '> onde `-op` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido *(ex: `!an cth`)*\n' +
+            '> - Se `-op` for `r`, então será aleatorizado um ancião\n' +
+            '> - Digite o comando `!id_anciao` para ver a carta do ancião',
           )
           break
         case 'sobr': // modo SOBREVIVÊNCIA
@@ -1681,10 +1665,10 @@ client.on('message', function (message: any) {
           message.channel.send(gtxt)
           message.channel.send(
             '> - Digite o comando `!an -op1 -op2 -op3 ... -op8`\n' +
-              '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido para a posição N *(ex: `!an aza cth`)*\n' +
-              '> - Se `-opN` for `r`, então será aleatorizado um ancião para a posição N *(ex: `!an aza r r r nya r shu cth`)*\n\n' +
-              'Para **aleatorizar todos**, digite o comando `!an r`\n' +
-              '> - Digite o comando `!id_anciao` para ver a carta do ancião',
+            '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido para a posição N *(ex: `!an aza cth`)*\n' +
+            '> - Se `-opN` for `r`, então será aleatorizado um ancião para a posição N *(ex: `!an aza r r r nya r shu cth`)*\n\n' +
+            'Para **aleatorizar todos**, digite o comando `!an r`\n' +
+            '> - Digite o comando `!id_anciao` para ver a carta do ancião',
           )
           break
         case 'solo': // modo SOLO
@@ -1692,10 +1676,10 @@ client.on('message', function (message: any) {
           message.channel.send(gtxt)
           message.channel.send(
             '> - Digite o comando `!an -op1..-opN`\n' +
-              '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido *(ex: `!an aza cth`)*\n' +
-              '> - Se `-opN` for `r`, então será aleatorizado um ancião para a posição N *(ex: !an aza r r r nya r shu cth)*\n\n' +
-              'Para **aleatorizar todos**, digite o comando `!an N r` *(diferente do modo Sobrevivência, o comando `!an r` neste modo gera 1 ancião aleatório (N = 1))*\n' +
-              '> - Digite o comando `!id_anciao` para ver a carta do ancião',
+            '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido *(ex: `!an aza cth`)*\n' +
+            '> - Se `-opN` for `r`, então será aleatorizado um ancião para a posição N *(ex: !an aza r r r nya r shu cth)*\n\n' +
+            'Para **aleatorizar todos**, digite o comando `!an N r` *(diferente do modo Sobrevivência, o comando `!an r` neste modo gera 1 ancião aleatório (N = 1))*\n' +
+            '> - Digite o comando `!id_anciao` para ver a carta do ancião',
           )
           break
         case 'custom': // modo CUSTOMIZADO
@@ -1703,10 +1687,10 @@ client.on('message', function (message: any) {
           message.channel.send(gtxt)
           message.channel.send(
             '> - Digite o comando `!an -op1..-opN`\n' +
-              '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido *(ex: `!an aza cth`)*\n' +
-              '> - Se `-opN` for `r`, então será aleatorizado um ancião para a posição `N` *(ex: `!an aza r r r nya r shu cth`)*\n\n' +
-              'Para **aleatorizar todos**, digite o comando `!an N r` *(diferente do modo Sobrevivência, o comando `!an r` neste modo gera 1 ancião aleatório (N = 1))*\n' +
-              '> - Digite o comando `!id_anciao` para ver a carta do ancião',
+            '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do ancião escolhido *(ex: `!an aza cth`)*\n' +
+            '> - Se `-opN` for `r`, então será aleatorizado um ancião para a posição `N` *(ex: `!an aza r r r nya r shu cth`)*\n\n' +
+            'Para **aleatorizar todos**, digite o comando `!an N r` *(diferente do modo Sobrevivência, o comando `!an r` neste modo gera 1 ancião aleatório (N = 1))*\n' +
+            '> - Digite o comando `!id_anciao` para ver a carta do ancião',
           )
       }
       message.channel.send('', {
@@ -1815,8 +1799,8 @@ client.on('message', function (message: any) {
             if (N > 1 && mesa[imatv].modo == 'simples') {
               message.reply(
                 'você digitou um comando para gerar ' +
-                  args[0] +
-                  ' <#785724975520415787> aleatórios\nPorém, em uma **PARTIDA SIMPLES** apenas um ancião é enfrentado',
+                args[0] +
+                ' <#785724975520415787> aleatórios\nPorém, em uma **PARTIDA SIMPLES** apenas um ancião é enfrentado',
               )
               N = 1
             }
@@ -1947,19 +1931,19 @@ client.on('message', function (message: any) {
         }
         message.channel.send(
           '``` • [ama]nda Sharpe  	• [jen]ny Barnes\n' +
-            ' • [bob] Jenkins    	• [joe] Diamond\n' +
-            ' • [car]olyn Fern   	• [kat]e Winthrop\n' +
-            ' • [dar]rell Simmons	• [man]dy Thompson\n' +
-            ' • [dex]ter Drake   	• [mic]hael McGlen\n' +
-            ' • [glo]ria Goldberg	• [mon]terey Jack\n' +
-            ' • [har]vey Walters 	• [pet]e "Chaminé"\n' +
-            ' • [irm]ã Mary      	• [vin]cent Lee  ```\n' +
-            '> - Digite o comando `!in -op1..-opN`\n' +
-            '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do investigador escolhido *(ex: `!in bob man`)*\n' +
-            '> - Se `-opN` for `r`, então será aleatorizado um investigador *(ex: `!in glo r r vin joe r mon r`)*\n' +
-            '> - Digite o comando `!id_invest` para ver a carta do investigador\n' +
-            '\nPara **aleatorizar todos**, digite o comando `!in N r`\n' +
-            'sendo `N` a quantidade de <#785721643393351700> ativos (max de 8 para os modos *Simples* e *Sobrevivência*)',
+          ' • [bob] Jenkins    	• [joe] Diamond\n' +
+          ' • [car]olyn Fern   	• [kat]e Winthrop\n' +
+          ' • [dar]rell Simmons	• [man]dy Thompson\n' +
+          ' • [dex]ter Drake   	• [mic]hael McGlen\n' +
+          ' • [glo]ria Goldberg	• [mon]terey Jack\n' +
+          ' • [har]vey Walters 	• [pet]e "Chaminé"\n' +
+          ' • [irm]ã Mary      	• [vin]cent Lee  ```\n' +
+          '> - Digite o comando `!in -op1..-opN`\n' +
+          '> onde `-opN` é o [texto entre parênteses], as 3 primeiras letras (minúsculas) do nome do investigador escolhido *(ex: `!in bob man`)*\n' +
+          '> - Se `-opN` for `r`, então será aleatorizado um investigador *(ex: `!in glo r r vin joe r mon r`)*\n' +
+          '> - Digite o comando `!id_invest` para ver a carta do investigador\n' +
+          '\nPara **aleatorizar todos**, digite o comando `!in N r`\n' +
+          'sendo `N` a quantidade de <#785721643393351700> ativos (max de 8 para os modos *Simples* e *Sobrevivência*)',
           {
             files: [
               'https://cdn.discordapp.com/attachments/727097227759058994/727436900876681236/line.png',
@@ -2043,10 +2027,10 @@ client.on('message', function (message: any) {
               }
               message.reply(
                 'você digitou um comando para ' +
-                  args[0] +
-                  ' investigadores ativos\nPorém, no ' +
-                  msgmd +
-                  ' o máximo de investigadores ativos é 8\nJogue no **MODO CUSTOMIZADO** para mais investigadores ativos',
+                args[0] +
+                ' investigadores ativos\nPorém, no ' +
+                msgmd +
+                ' o máximo de investigadores ativos é 8\nJogue no **MODO CUSTOMIZADO** para mais investigadores ativos',
               )
               N = 8
             }
@@ -2184,12 +2168,12 @@ client.on('message', function (message: any) {
       }
       message.channel.send(
         invtxt +
-          '```\n**DISTRIBUIÇÃO DE ITENS INICIAIS**\n*(em jogos com 10+ investigadores, pode ocorrer de não haver item disponível)*\n\n' +
-          '> - Digite o comando `!-op id_invest` conforme a quantidade de itens iniciais indicados na carta do investigador\n' +
-          '> onde `-op` é:\n>  • `c` para Itens Comuns    <:item_com:786001424529883147>' +
-          '\n>  • `e` para Itens Especiais   <:item_esp:786001446129631243>' +
-          '\n>  • `f` para Feitiços                <:feitico:786001402475708486>\n' +
-          '> - Digite o comando `!id_invest` para ver a carta do investigador',
+        '```\n**DISTRIBUIÇÃO DE ITENS INICIAIS**\n*(em jogos com 10+ investigadores, pode ocorrer de não haver item disponível)*\n\n' +
+        '> - Digite o comando `!-op id_invest` conforme a quantidade de itens iniciais indicados na carta do investigador\n' +
+        '> onde `-op` é:\n>  • `c` para Itens Comuns    <:item_com:786001424529883147>' +
+        '\n>  • `e` para Itens Especiais   <:item_esp:786001446129631243>' +
+        '\n>  • `f` para Feitiços                <:feitico:786001402475708486>\n' +
+        '> - Digite o comando `!id_invest` para ver a carta do investigador',
       )
       if (mesa[imatv].cinvs[9].ativo && mesa[imatv].cinvs[11].ativo) {
         message.channel.send(
@@ -2495,7 +2479,7 @@ client.on('message', function (message: any) {
                     var roll = Math.floor(Math.random() * 6) // This JavaScript function always returns a random number between min and max (both included) -- Math.floor(Math.random() * (max - min + 1) ) + min;
                     switch (roll) {
                       case 0:
-                        r += ' <:1v:786453340505767957> '
+                        r += ` ${Emojis.VERDE_1} `
                         break
                       case 1:
                         r += ' <:2v:786453350873956363> '
@@ -2729,10 +2713,10 @@ client.on('message', function (message: any) {
         }
         if (mesa[imatv].maxcom == 0) {
           message.channel.send(
-            ':warning:  *O baralho de **ITENS COMUNS** <:item_com:786001424529883147> está vazio\ne não há cartas disponíveis para reembaralhar*  :warning:' +
-              '\n\nTodos os **ITENS COMUNS** <:item_com:786001424529883147> estão nas mãos dos <#785721643393351700>',
+            `:warning:  *O baralho de **ITENS COMUNS** ${Emojis.ITEM_C} está vazio\ne não há cartas disponíveis para reembaralhar*  :warning:
+              \n\nTodos os **ITENS COMUNS** ${Emojis.ITEM_C} estão nas mãos dos <#785721643393351700>`,
           )
-          message.reply('nenhum <:item_com:786001424529883147> disponível')
+          message.reply(`nenhum ${Emojis.ITEM_C} disponível`)
         }
       }
 
@@ -2822,7 +2806,7 @@ client.on('message', function (message: any) {
         if (mesa[imatv].maxesp == 0) {
           message.channel.send(
             ':warning:  *O baralho de **ITENS ESPECIAIS** <:item_esp:786001446129631243> está vazio\ne não há cartas disponíveis para reembaralhar*  :warning:' +
-              '\n\nTodos os **ITENS ESPECIAIS** <:item_esp:786001446129631243> estão nas mãos dos <#785721643393351700>',
+            '\n\nTodos os **ITENS ESPECIAIS** <:item_esp:786001446129631243> estão nas mãos dos <#785721643393351700>',
           )
           message.reply('nenhum <:item_esp:786001446129631243> disponível')
         }
@@ -2835,8 +2819,8 @@ client.on('message', function (message: any) {
         if (reemb == 1)
           message.channel.send(
             '*O baralho de **ITENS ESPECIAIS** <:item_esp:786001446129631243> estava vazio e foi reembaralhado com ' +
-              mesa[imatv].maxesp +
-              '/12 cartas*',
+            mesa[imatv].maxesp +
+            '/12 cartas*',
           )
         do {
           var roll = Math.floor(Math.random() * 12) // This JavaScript function always returns a random number between min and max (both included) -- Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -2915,7 +2899,7 @@ client.on('message', function (message: any) {
         if (mesa[imatv].maxfeit == 0) {
           message.channel.send(
             ':warning:  *O baralho de **FEITIÇOS** <:feitico:786001402475708486> está vazio\ne não há cartas disponíveis para reembaralhar*  :warning:' +
-              '\n\nTodos os **FEITIÇOS** <:feitico:786001402475708486> estão nas mãos dos <#785721643393351700>',
+            '\n\nTodos os **FEITIÇOS** <:feitico:786001402475708486> estão nas mãos dos <#785721643393351700>',
           )
           message.reply('nenhum <:feitico:786001402475708486> disponível')
         }
@@ -2929,8 +2913,8 @@ client.on('message', function (message: any) {
         if (reemb == 1)
           message.channel.send(
             '*O baralho de **FEITIÇOS** <:feitico:786001402475708486> estava vazio e foi reembaralhado com ' +
-              mesa[imatv].maxfeit +
-              '/12 cartas*',
+            mesa[imatv].maxfeit +
+            '/12 cartas*',
           )
         do {
           var roll = Math.floor(Math.random() * 12) // This JavaScript function always returns a random number between min and max (both included) -- Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -3009,7 +2993,7 @@ client.on('message', function (message: any) {
         if (mesa[imatv].maxaliado == 0) {
           message.channel.send(
             ':warning:  *O baralho de **ALIADOS** <:aliado:786001382796034079> está vazio\ne não há cartas disponíveis para reembaralhar*  :warning:' +
-              '\n\nTodos os **ALIADOS** <:aliado:786001382796034079> estão nas mãos dos <#785721643393351700>',
+            '\n\nTodos os **ALIADOS** <:aliado:786001382796034079> estão nas mãos dos <#785721643393351700>',
           )
           message.reply('nenhum <:aliado:786001382796034079> disponível')
         }
@@ -3022,8 +3006,8 @@ client.on('message', function (message: any) {
         if (reemb == 1)
           message.channel.send(
             '*O baralho de **ALIADOS** <:aliado:786001382796034079> estava vazio e foi reembaralhado com ' +
-              mesa[imatv].maxaliado +
-              '/8 cartas.',
+            mesa[imatv].maxaliado +
+            '/8 cartas.',
           )
         do {
           var roll = Math.floor(Math.random() * 8) // This JavaScript function always returns a random number between min and max (both included) -- Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -3258,7 +3242,7 @@ client.on('message', function (message: any) {
           result.setColor('ffcc00')
           result.setAuthor(
             mesa[imatv].cinvs[x].nome +
-              ' não possui <:pista:785894888725151745> para usar',
+            ' não possui <:pista:785894888725151745> para usar',
             mesa[imatv].cinvs[x].aimag,
           )
           //result.setTitle(mesa[imatv].cinvs[x].nome + " não possui <:pista:785894888725151745> para usar");
@@ -3273,23 +3257,23 @@ client.on('message', function (message: any) {
           mesa[imatv].cinvs[x].pista--
           result.setAuthor(
             mesa[imatv].cinvs[x].nome +
-              ' gastou uma <:pista:785894888725151745>',
+            ' gastou uma <:pista:785894888725151745>',
             mesa[imatv].cinvs[x].aimag,
           )
           //result.setTitle(mesa[imatv].cinvs[x].nome + " gastou uma <:pista:785894888725151745>");
           if (mesa[imatv].cinvs[x].pista > 1)
             result.setDescription(
               'Restam ' +
-                mesa[imatv].cinvs[x].pista +
-                ' <:pista:785894888725151745>',
+              mesa[imatv].cinvs[x].pista +
+              ' <:pista:785894888725151745>',
             )
           else if (mesa[imatv].cinvs[x].pista < 1)
             result.setDescription('Acabaram as <:pista:785894888725151745>')
           else
             result.setDescription(
               'Resta ' +
-                mesa[imatv].cinvs[x].pista +
-                ' <:pista:785894888725151745>',
+              mesa[imatv].cinvs[x].pista +
+              ' <:pista:785894888725151745>',
             )
           result.setThumbnail(
             'https://cdn.discordapp.com/emojis/785894888725151745.png?v=1',
