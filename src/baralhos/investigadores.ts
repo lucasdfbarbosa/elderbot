@@ -14,8 +14,8 @@ export const INVESTIGADORES = [
     nome: 'Amanda Sharpe', // nome e
     id: 'ama', // identificador e
     desc: 'A Estudante', // ocupação do investigador
-    sanid: [{ max: 5, atual: 5 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 5, atual: 5 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 5, atual: 5 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 5, atual: 5 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:						// efeito da habilidade especial do investigador
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785726472923906078/Amanda_Sharpe.jpeg', // link da imagem
@@ -29,8 +29,8 @@ export const INVESTIGADORES = [
     nome: 'Bob Jenkins',
     id: 'bob',
     desc: 'O Vendedor', // ocupação do investigador
-    sanid: [{ max: 4, atual: 4 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 6, atual: 6 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 4, atual: 4 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 6, atual: 6 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:						// efeito da habilidade especial do investigador
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785726618068582411/Bob_Jenkins.jpeg',
@@ -44,8 +44,8 @@ export const INVESTIGADORES = [
     nome: 'Carolyn Fern',
     id: 'car',
     desc: 'A Psicóloga', // ocupação do investigador
-    sanid: [{ max: 6, atual: 6 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 4, atual: 4 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 6, atual: 6 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 4, atual: 4 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:						// efeito da habilidade especial do investigador
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785726708098924594/Carolyn_Fern.jpeg',
@@ -59,8 +59,8 @@ export const INVESTIGADORES = [
     nome: 'Darrell Simmons',
     id: 'dar',
     desc: 'O Fotógrafo',
-    sanid: [{ max: 4, atual: 4 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 6, atual: 6 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 4, atual: 4 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 6, atual: 6 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785726807868833822/Darrell_Simmons.jpeg',
@@ -74,8 +74,8 @@ export const INVESTIGADORES = [
     nome: 'Dexter Drake',
     id: 'dex',
     desc: 'O Mágico',
-    sanid: [{ max: 5, atual: 5 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 5, atual: 5 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 5, atual: 5 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 5, atual: 5 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785726895902818304/Dexter_Drake.jpeg',
@@ -89,8 +89,8 @@ export const INVESTIGADORES = [
     nome: 'Gloria Goldberg',
     id: 'glo',
     desc: 'A Autora',
-    sanid: [{ max: 6, atual: 6 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 4, atual: 4 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 6, atual: 6 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 4, atual: 4 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785726977876426752/Gloria_Goldberg.jpeg',
@@ -104,8 +104,8 @@ export const INVESTIGADORES = [
     nome: 'Harvey Walters',
     id: 'har',
     desc: 'O Professor',
-    sanid: [{ max: 7, atual: 7 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 3, atual: 3 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 7, atual: 7 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 3, atual: 3 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
 
     imag:
@@ -120,8 +120,8 @@ export const INVESTIGADORES = [
     nome: 'Irmã Mary',
     id: 'irm',
     desc: 'A Freira',
-    sanid: [{ max: 7, atual: 7 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 3, atual: 3 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 7, atual: 7 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 3, atual: 3 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
 
     imag:
@@ -136,10 +136,9 @@ export const INVESTIGADORES = [
     nome: 'Jenny Barnes',
     id: 'jen',
     desc: 'A Diletante',
-    sanid: [{ max: 6, atual: 6 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 4, atual: 4 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 6, atual: 6 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 4, atual: 4 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
-
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785727232537526303/Jenny_Barnes.jpeg',
     aimag: 'https://cdn.discordapp.com/emojis/785687145754132490.png?v=1',
@@ -152,8 +151,8 @@ export const INVESTIGADORES = [
     nome: 'Joe Diamond',
     id: 'joe',
     desc: 'O Detetive Particular',
-    sanid: [{ max: 4, atual: 4 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 6, atual: 6 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 4, atual: 4 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 6, atual: 6 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
     pista: 1,
     imag:
@@ -168,8 +167,8 @@ export const INVESTIGADORES = [
     nome: 'Kate Winthrop',
     id: 'kat',
     desc: 'A Cientista',
-    sanid: [{ max: 6, atual: 6 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 4, atual: 4 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 6, atual: 6 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 4, atual: 4 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785727416457756712/Kate_Winthrop.jpeg',
@@ -183,8 +182,8 @@ export const INVESTIGADORES = [
     nome: 'Mandy Thompson',
     id: 'man',
     desc: 'A Pesquisadora',
-    sanid: [{ max: 5, atual: 5 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 5, atual: 5 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 5, atual: 5 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 5, atual: 5 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
     pista: 1,
     imag:
@@ -199,10 +198,9 @@ export const INVESTIGADORES = [
     nome: 'Michael McGlen',
     id: 'mic',
     desc: 'O Gângster',
-    sanid: [{ max: 3, atual: 3 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 7, atual: 7 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 3, atual: 3 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 7, atual: 7 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
-
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785727585639596062/Michael_McGlen.jpeg',
     aimag: 'https://cdn.discordapp.com/emojis/785687227614625822.png?v=1',
@@ -215,8 +213,8 @@ export const INVESTIGADORES = [
     nome: 'Monterey Jack',
     id: 'mon',
     desc: 'O Arqueólogo',
-    sanid: [{ max: 3, atual: 3 }], // máximo de sanidade e sanidade atual durante o jogo
-    resist: [{ max: 7, atual: 7 }], // máximo de resistência e resistência atual durante o jogo
+    sanid: { max: 3, atual: 3 }, // máximo de sanidade e sanidade atual durante o jogo
+    resist: { max: 7, atual: 7 }, // máximo de resistência e resistência atual durante o jogo
     //habesp:
     imag:
       'https://media.discordapp.net/attachments/785721643393351700/785727689910124564/Monterey_Jack.jpeg',
